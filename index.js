@@ -15,4 +15,23 @@ layers.forEach(
         labels[labels.length - 1].innerHTML = value;
         document.getElementById("panel").appendChild(document.createElement("br"));
     }
-)
+);
+
+var map = new ol.Map({
+    target: 'map',
+    interactions: [],
+    layers: [
+        new ol.layer.Tile({
+            title: "Natural Earth Base Map",
+            source: new ol.source.TileWMS({
+            url: 'http://wms.ign.gob.ar/geoserver/wms',
+            params: {
+                LAYERS: 'capabaseargenmap',
+                VERSION: '1.1.1'
+                    }})})
+            ],
+    view: new ol.View({
+        projection: 'EPSG:4326',
+        center: [-59, -27.5],
+        zoom: 4})
+    });
