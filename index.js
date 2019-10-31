@@ -30,7 +30,6 @@ var map = new ol.Map({
     });
 
 
-
 my_layers.forEach(
     function(value, index){
         var checkbox = document.createElement("input");
