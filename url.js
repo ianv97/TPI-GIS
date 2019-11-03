@@ -1,1 +1,1 @@
-var URL_OGC = '/cgi-bin/qgis_mapserv.fcgi?map=/home/user/tpitest/tpitest.qgz';
+var URL_OGC = '/cgi-bin/qgis_mapserv.fcgi?map=/home/user/Desktop/tpigis.qgz';
