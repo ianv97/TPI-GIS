@@ -1,34 +1,40 @@
-var my_layers = ['veg_Hidrofila', 'Edif_Depor_y_Esparcimiento', 'Complejo_de_Energia_Ene', 'Salvado_de_Obstaculo', 'Pais_Lim', 'Sue_congelado', 'Actividades_Agropecuarias', 'Líneas_de_Conducción_Ene', 'Edificio_de_Seguridad_IPS', 'Puntos_de_Alturas_Topograficas', 'Sue_consolidado', 'Limite_Politico_Administrativo_Lim', 'Isla', 'Otras_Edificaciones', 'Localidades', 'Espejo_de_Agua_Hid', 'Obra_Portuaria', 'Red_ferroviaria', 'Vias_Secundarias', 'Edif_Educacion', 'Curvas_de_Nivel', 'Red_Vial', 'Señalizaciones', 'Veg_Arborea', 'Edificios_Ferroviarios', 'Sue_Costero', 'Sue_Hidromorfologico', 'Infraestructura_Hidro', 'Marcas_y_Señales', 'Veg_Arbustiva', 'Edificio_de_Salud_IPS', 'Provincias', 'Obra_de_Comunicación', 'Edif_Construcciones_Turisticas', 'Puente_Red_Vial_Puntos', 'Curso_de_Agua_Hid', 'Edificio_Publico_IPS', 'Muro_Embalse', 'Sue_No_Consolidado', 'Infraestructura_Aeroportuaria_Punto', 'Estructuras_portuarias', 'Edif_Religiosos', 'Actividades_Economicas', 'Veg_Suelo_Desnudo', 'Ejido', 'Puntos_del_Terreno', 'Veg_Cultivos'];
+var my_layers = ['veg_hidrofila', 'edif_depor_y_esparcimiento', 'complejo_de_energia_ene', 'salvado_de_obstaculo', 'pais_lim', 'sue_congelado', 'actividades_agropecuarias', 'líneas_de_conducción_ene', 'edificio_de_seguridad_ips', 'puntos_de_alturas_topograficas', 'sue_consolidado', 'limite_politico_administrativo_lim', 'isla', 'otras_edificaciones', 'localidades', 'espejo_de_agua_hid', 'obra_portuaria', 'red_ferroviaria', 'vias_secundarias', 'edif_educacion', 'curvas_de_nivel', 'red_vial', 'señalizaciones', 'veg_arborea', 'edificios_ferroviarios', 'sue_costero', 'sue_hidromorfologico', 'infraestructura_hidro', 'marcas_y_señales', 'veg_arbustiva', 'edificio_de_salud_ips', 'provincias', 'obra_de_comunicación', 'edif_construcciones_turisticas', 'puente_red_vial_puntos', 'curso_de_agua_hid', 'edificio_publico_ips', 'muro_embalse', 'sue_no_consolidado', 'infraestructura_aeroportuaria_punto', 'estructuras_portuarias', 'edif_religiosos', 'actividades_economicas', 'veg_suelo_desnudo', 'ejido', 'puntos_del_terreno', 'veg_cultivos'];
 
-var map = new ol.Map({
-    target: 'map',
-    layers: [
-        new ol.layer.Tile({ //objeto capa de tipo Tile (Mosaico de Imagenes)
-            title: "Natural Earth Base Map", //titulo de la capa
-            source: new ol.source.TileWMS({ //fuente de datos de la capa (TileWMS)
-            url: 'http://wms.ign.gob.ar/geoserver/wms', //url del servicio WMS
-            params: { //parametros del servicio WMS
-                LAYERS: 'capabaseargenmap', //capa(s) del servicio WMS
-                VERSION: '1.1.1' //version del estandar WMS
-        }
-    })
-    }),
-        new ol.layer.Image({
-            title: "Provincias",
-            source: new ol.source.ImageWMS({
-            url: URL_OGC,
-            params: {
-                LAYERS: "provincias"
+var layers_to_show =[
+        new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: "https://wms.ign.gob.ar/geoserver/wms",
+                params: {
+                    LAYERS: "ign:provincia",
+                    VERSION: "1.1.1"
                 }
             })
         })
-    ],
+        ];
+
+my_layers.forEach(function(value) {
+    let layer = new ol.layer.Image({
+            title: value,
+            visible: false,
+            source: new ol.source.ImageWMS({
+                url: URL_OGC,
+                params: {
+                    LAYERS: value,
+                    }
+                })
+        });
+    layers_to_show.push(layer)
+})
+
+
+var map = new ol.Map({
+    target: 'map',
+    layers: layers_to_show,
     view: new ol.View({
         projection: 'EPSG:4326',
         center: [-59, -27.5],
         zoom: 4})
     });
-
 
 my_layers.forEach(
     function(value, index){
@@ -36,6 +42,9 @@ my_layers.forEach(
         var label_for_input = document.createElement("label");
         var check_layer_id = "check_layer_" + index;
         var labels = document.getElementsByTagName("label");
+        
+        var a_layer = layers_to_show[index+1];
+
         checkbox.setAttribute("type", "checkbox")
         checkbox.setAttribute("id", check_layer_id)
         label_for_input.setAttribute("for", check_layer_id);
@@ -43,5 +52,23 @@ my_layers.forEach(
         document.getElementById(check_layer_id).insertAdjacentElement("afterend", label_for_input);
         labels[labels.length - 1].innerHTML = value;
         document.getElementById("panel").appendChild(document.createElement("br"));
+
+        //visibilidad de las capas
+        
+        checkbox.addEventListener("change",
+            function () {
+                var checked = this.checked;
+                if (checked !== a_layer.getVisible()) {
+                    a_layer.setVisible(checked)
+                }
+            });
+        a_layer.on("change:visible",
+            function() {
+                var visible = this.getVisible();
+                if (visible !== checkbox.checked){
+                    checkbox.checked=visible;
+                }
+            })
     }
+
 );
