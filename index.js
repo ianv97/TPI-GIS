@@ -32,8 +32,8 @@ var map = new ol.Map({
     layers: layers_to_show,
     view: new ol.View({
         projection: 'EPSG:4326',
-        center: [-59, -27.5],
-        zoom: 4})
+        center: [-60, -38.5],
+        zoom: 5})
     });
 
 my_layers.forEach(
