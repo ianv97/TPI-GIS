@@ -41,7 +41,7 @@
               <prop k="color" v="255,0,0,255"/>
               <prop k="fixedAspectRatio" v="1"/>
               <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="name" v="/home/user/pajonal2.svg"/>
+              <prop k="name" v="/var/www/html/TPI-GIS/EstilosDeCapas/imagenes/pajonal2.svg"/>
               <prop k="offset" v="0,0"/>
               <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="offset_unit" v="MM"/>
@@ -100,7 +100,7 @@
               <prop k="color" v="0,0,255,255"/>
               <prop k="fixedAspectRatio" v="1"/>
               <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="name" v="/home/user/pajonal2.svg"/>
+              <prop k="name" v="/var/www/html/TPI-GIS/EstilosDeCapas/imagenes/pajonal2.svg"/>
               <prop k="offset" v="0,0"/>
               <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="offset_unit" v="MM"/>
@@ -161,7 +161,7 @@
               <prop k="color" v="255,0,0,255"/>
               <prop k="fixedAspectRatio" v="1"/>
               <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="name" v="/home/user/pajonal2.svg"/>
+              <prop k="name" v="/var/www/html/TPI-GIS/EstilosDeCapas/imagenes/pajonal2.svg"/>
               <prop k="offset" v="0,0"/>
               <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="offset_unit" v="MM"/>
