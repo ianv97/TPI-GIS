@@ -1,5 +1,10 @@
 var wmsSource;
-var my_layers = ['veg_hidrofila', 'edif_depor_y_esparcimiento', 'complejo_de_energia_ene', 'salvado_de_obstaculo', 'pais_lim', 'sue_congelado', 'actividades_agropecuarias', 'líneas_de_conducción_ene', 'edificio_de_seguridad_ips', 'puntos_de_alturas_topograficas', 'sue_consolidado', 'limite_politico_administrativo_lim', 'isla', 'otras_edificaciones', 'localidades', 'espejo_de_agua_hid', 'obra_portuaria', 'red_ferroviaria', 'vias_secundarias', 'edif_educacion', 'curvas_de_nivel', 'red_vial', 'señalizaciones', 'veg_arborea', 'edificios_ferroviarios', 'sue_costero', 'sue_hidromorfologico', 'infraestructura_hidro', 'marcas_y_señales', 'veg_arbustiva', 'edificio_de_salud_ips', 'provincias', 'obra_de_comunicación', 'edif_construcciones_turisticas', 'puente_red_vial_puntos', 'curso_de_agua_hid', 'edificio_publico_ips', 'muro_embalse', 'sue_no_consolidado', 'infraestructura_aeroportuaria_punto', 'estructuras_portuarias', 'edif_religiosos', 'actividades_economicas', 'veg_suelo_desnudo', 'ejido', 'puntos_del_terreno', 'veg_cultivos'];
+var my_layers = ['actividades_agropecuarias', 'actividades_economicas', 'complejo_de_energia_ene', 'edif_construcciones_turisticas', 'edificio_de_salud_ips', 'edificio_de_seguridad_ips', 
+'edif_depor_y_esparcimiento', 'edif_educacion', 'edificios_ferroviarios', 'edificio_publico_ips', 'edif_religiosos', 'estructuras_portuarias', 'infraestructura_aeroportuaria_punto', 
+'infraestructura_hidro', 'localidades', 'marcas_y_señales', 'otras_edificaciones', 'obra_portuaria', 'obra_de_comunicación', 'puente_red_vial_puntos', 'puntos_de_alturas_topograficas', 
+'puntos_del_terreno', 'salvado_de_obstaculo', 'señalizaciones', 'curso_de_agua_hid', 'curvas_de_nivel', 'líneas_de_conducción_ene', 'limite_politico_administrativo_lim', 'muro_embalse', 
+'red_ferroviaria', 'red_vial', 'vias_secundarias', 'ejido', 'espejo_de_agua_hid',  'isla', 'pais_lim', 'provincias', 'sue_congelado',  'sue_consolidado', 'sue_costero', 'sue_hidromorfologico', 
+'sue_no_consolidado', 'veg_arborea', 'veg_arbustiva', 'veg_cultivos', 'veg_hidrofila', 'veg_suelo_desnudo'];
 
 var layers_to_show =[
   new ol.layer.Tile({
