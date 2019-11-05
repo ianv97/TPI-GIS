@@ -6,6 +6,16 @@ var my_layers = ['actividades_agropecuarias', 'actividades_economicas', 'complej
 'red_ferroviaria', 'red_vial', 'vias_secundarias', 'ejido', 'espejo_de_agua_hid',  'isla', 'pais_lim', 'provincias', 'sue_congelado',  'sue_consolidado', 'sue_costero', 'sue_hidromorfologico', 
 'sue_no_consolidado', 'veg_arborea', 'veg_arbustiva', 'veg_cultivos', 'veg_hidrofila', 'veg_suelo_desnudo'];
 
+  $('#layout').w2layout({
+      name: 'layout',
+      panels: [
+          { type: 'left', size: 350, resizable: true, style: layerspanel_styles, content: layerspanel },
+          { type: 'main', content: mappanel },
+          { type: 'bottom', resizable: true, hidden: false, style: infopanel_styles, content: infopanel }
+      ]
+  });
+
+
 var layers_to_show =[
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
@@ -43,6 +53,7 @@ var map = new ol.Map({
   layers: layers_to_show,
   view: view
 });
+
 
 my_layers.forEach(
     function(value, index){
