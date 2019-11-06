@@ -2,7 +2,7 @@ import set_layout from "./layout.js";
 var layers, layers_to_show, view, map, wmsSource;
 
 
-set_layout( function() {
+set_layout();
 layers = ['actividades_agropecuarias', 'actividades_economicas', 'complejo_de_energia_ene', 'edif_construcciones_turisticas', 'edificio_de_salud_ips', 'edificio_de_seguridad_ips', 
 'edif_depor_y_esparcimiento', 'edif_educacion', 'edificios_ferroviarios', 'edificio_publico_ips', 'edif_religiosos', 'estructuras_portuarias', 'infraestructura_aeroportuaria_punto', 
 'infraestructura_hidro', 'localidades', 'marcas_y_señales', 'otras_edificaciones', 'obra_portuaria', 'obra_de_comunicación', 'puente_red_vial_puntos', 'puntos_de_alturas_topograficas', 
@@ -127,6 +127,4 @@ map.on('singleclick', function(evt) {
     // Si no hay una fuente se oculta el infopanel
     w2ui['inner_layout'].hide('bottom', false)
   }
-});
-
 });
