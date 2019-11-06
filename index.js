@@ -1,5 +1,5 @@
 import set_layout from "./layout.js";
-var layers, layers_to_show, view, map, wmsSource;
+var layers, layers_to_show, view, map, wmsSource, mousePositionControl;
 
 
 set_layout();
@@ -36,6 +36,12 @@ layers.forEach(function(value) {
   layers_to_show.push(layer);
 });
 
+mousePositionControl = new ol.control.MousePosition({
+  coordinateFormat: ol.coordinate.createStringXY(4),
+  projection: "EPSG:4326",
+  undefinedHTML: "&nbsp;"
+})
+
 view = new ol.View({
   projection: 'EPSG:4326',
   center: [-60, -38.5],
@@ -43,10 +49,12 @@ view = new ol.View({
 });
 
 map = new ol.Map({
+  controls: ol.control.defaults().extend([mousePositionControl]),
   target: 'map',
   layers: layers_to_show,
   view: view
 });
+
 
 
 // Listado de capas
