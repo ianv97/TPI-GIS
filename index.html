@@ -3,19 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="OpenLayers_v6.0.1/css/ol.css" type="text/css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="W2UI_v1.5/w2ui-1.5.css" />
+    <link rel="stylesheet" href="lib/OpenLayers_v6.0.1/css/ol.css">
+    <link rel="stylesheet" href="lib/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/w2ui-1.5.css">
+    <link rel="stylesheet" href="lib/Fontawesome_v5.11.2-web/css/all.css">
     <title>TPI SIG 2019</title>
 </head>
 
 
-<body id="layout" style="margin:0; width: 100vw; height: 100vh;">
-  <div id="map" style="float: right; width: calc(100% - 350px); height: 100vh;"></div>
-  <div id="layerspanel" style="float: left; width: 350px; height: 100vh; overflow-y: scroll;  background-color: #008dc9; color: #fff;">
-    <h3 style="text-align: center">CAPAS</h3>
-  </div>
-</body>
+<body id="layout" style="margin:0; width: 100vw; height: 100vh;"></body>
 
 
 <script>
@@ -26,6 +22,7 @@ var layerspanel =`
 `;
 var layerspanel_styles = `
   height: 100vh;
+  padding: 10px;
   float: left;
   overflow-y: scroll;
   color: #fff;
@@ -33,25 +30,39 @@ var layerspanel_styles = `
 `;
 
 var mappanel = `
-  <div id="map" style="float: right; width: 100%; height: 100vh;"></div>
+  <div id="map" style="width: 100vw; height: 100vh;"></div>
 `;
 
-var infopanel = `<div id="infopanel" style="height: 20vh; width: calc(100%-350px);"></div>`;
+var infopanel = `<div id="infopanel"></div>`;
 var infopanel_styles = `
-height: 20vh;
 padding: 0 10px;
 overflow-y: scroll;
 color: #fff;
 background-color: #008dc9;
 `
 
+var buttonspanel = `
+<div id="buttonspanel">
+  <button class="btn btn-dark" onclick="w2ui['layout'].toggle('left', false)"><i class="fas fa-layer-group"></i></button>
+  <button class="btn btn-dark mt-3" onclick="w2ui['inner_layout'].toggle('bottom', false)"><i class="fas fa-table"></i></button>
+</div>
+`;
+var buttonspanel_styles = `
+height: 100vh;
+padding: 10px 6px;
+overflow-y: scroll;
+color: #fff;
+background-color: #008dc9;
+`
 </script>
 
-<script src="OpenLayers_v6.0.1/build/ol.js"></script>
-<script src="url.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script type="text/javascript" src="W2UI_v1.5/w2ui-1.5.js"></script>
-<script src="index.js"></script>
+<script src="lib/OpenLayers_v6.0.1/build/ol.js" type="text/javascript"></script>
+<script src="lib/jquery-3.3.1.slim.min.js" type="text/javascript"></script>
+<script src="lib/popper.min.js" type="text/javascript"></script>
+<script src="lib/bootstrap.min.js" type="text/javascript"></script>
+<script src="lib/w2ui-1.5.js" type="text/javascript"></script>
+
+<script src="url.js" type="text/javascript"></script>
+<script src="layout.js" type="module"></script>
+<script src="index.js" type="module"></script>
 </html>
