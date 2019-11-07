@@ -1,5 +1,5 @@
 import set_layout from "./layout.js";
-var layers, layers_to_show, view, map, wmsSource, mousePositionControl;
+var l_names, layers, layers_to_show, view, map, wmsSource, mousePositionControl;
 
 
 set_layout();
@@ -10,6 +10,12 @@ layers = ['actividades_agropecuarias', 'actividades_economicas', 'complejo_de_en
 'red_ferroviaria', 'red_vial', 'vias_secundarias', 'ejido', 'espejo_de_agua_hid',  'isla', 'pais_lim', 'provincias', 'sue_congelado',  'sue_consolidado', 'sue_costero', 'sue_hidromorfologico', 
 'sue_no_consolidado', 'veg_arborea', 'veg_arbustiva', 'veg_cultivos', 'veg_hidrofila', 'veg_suelo_desnudo'];
 
+l_names = ['Activ. agropecuarias', 'Activ. economicas', 'Complejos de energia', 'Construc. turisticas', 'Edif. de salud', 'Edif. de seguridad', 
+'Edif deporte y esparc.', 'Edif educac.', 'Edif. ferroviarios', 'Edifi. publico', 'Edif. religiosos', 'Estruc. portuarias', 'Infr. aeroportuaria', 
+'Infr._hidro', 'localidades', 'marcas y señales', 'otras edificac.', 'obra portuaria', 'obra de comunicación', 'Puente red vial', 'Ptos de alturas topogr.', 
+'Ptos del terreno', 'Salvado de obstaculo', 'señalizaciones', 'curso de agua', 'curvas de nivel', 'lín. de conducción', 'lim politico adm', 'muro embalse', 
+'red ferroviaria', 'red vial', 'vias secundarias', 'ejido', 'espejo de agua hid',  'isla', 'pais lim', 'provincias', 'suelo congelado',  'suelo consolidado', 'suelo costero', 'suelo hidromorfologico', 
+'suelo no consolidado', 'veg. arborea', 'veg. arbustiva', 'veg. cultivos', 'veg. hidrofila', 'veg. suelo desnudo'];
 layers_to_show =[
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
@@ -55,12 +61,28 @@ map = new ol.Map({
   view: view
 });
 
-
-
-// Listado de capas
+// Listado de capas y sus leyendas
 layers.forEach(
     function(value, index){
         var a_layer = layers_to_show[index+1];
+        wmsSource = new ol.source.ImageWMS({
+          url: URL_OGC,
+          params: {"LAYERS": value},
+          ratio: 1,
+          serverType: "geoserver"
+        });
+
+        var legend_id = "legend_"+index;
+
+        var lgnd = document.createElement("div");
+        var lgnd_img = document.createElement("img");
+        lgnd_img.setAttribute("id", legend_id);
+        lgnd_img.setAttribute("src", wmsSource.getLegendUrl(map.getView().getResolution()));
+        lgnd_img.setAttribute("width", 150);
+        lgnd_img.setAttribute("heigth", 150)
+        lgnd.appendChild(lgnd_img);
+        document.getElementById("legendspanel").insertAdjacentElement("beforeend", lgnd);
+        document.getElementById("legendspanel").appendChild(document.createElement("br"));
 
         //Checkbox
         var checkbox = document.createElement("input");
@@ -73,7 +95,7 @@ layers.forEach(
         var label = document.createElement("label");
         label.setAttribute("for", check_layer_id);
         label.setAttribute("style", "margin-left:3px; text-transform:capitalize;");
-        label.innerHTML = value;
+        label.innerHTML = l_names[index];
         document.getElementById(check_layer_id).insertAdjacentElement("afterend", label);
         document.getElementById("layerspanel").appendChild(document.createElement("br"));
 
