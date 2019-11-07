@@ -1,15 +1,21 @@
 import set_layout from "./layout.js";
-var layers, layers_to_show, view, map, wmsSource, mousePositionControl;
+var l_names, layers, layers_to_show, view, map, wmsSource, mousePositionControl;
 
 
 set_layout();
-layers = ['Activ. agropecuarias', 'Activ. economicas', 'Complejos de energia', 'Construc. turisticas', 'Edif. de salud', 'Edif. de seguridad', 
+layers = ['actividades_agropecuarias', 'actividades_economicas', 'complejo_de_energia_ene', 'edif_construcciones_turisticas', 'edificio_de_salud_ips', 'edificio_de_seguridad_ips', 
+'edif_depor_y_esparcimiento', 'edif_educacion', 'edificios_ferroviarios', 'edificio_publico_ips', 'edif_religiosos', 'estructuras_portuarias', 'infraestructura_aeroportuaria_punto', 
+'infraestructura_hidro', 'localidades', 'marcas_y_señales', 'otras_edificaciones', 'obra_portuaria', 'obra_de_comunicación', 'puente_red_vial_puntos', 'puntos_de_alturas_topograficas', 
+'puntos_del_terreno', 'salvado_de_obstaculo', 'señalizaciones', 'curso_de_agua_hid', 'curvas_de_nivel', 'líneas_de_conducción_ene', 'limite_politico_administrativo_lim', 'muro_embalse', 
+'red_ferroviaria', 'red_vial', 'vias_secundarias', 'ejido', 'espejo_de_agua_hid',  'isla', 'pais_lim', 'provincias', 'sue_congelado',  'sue_consolidado', 'sue_costero', 'sue_hidromorfologico', 
+'sue_no_consolidado', 'veg_arborea', 'veg_arbustiva', 'veg_cultivos', 'veg_hidrofila', 'veg_suelo_desnudo'];
+
+l_names = ['Activ. agropecuarias', 'Activ. economicas', 'Complejos de energia', 'Construc. turisticas', 'Edif. de salud', 'Edif. de seguridad', 
 'Edif deporte y esparc.', 'Edif educac.', 'Edif. ferroviarios', 'Edifi. publico', 'Edif. religiosos', 'Estruc. portuarias', 'Infr. aeroportuaria', 
 'Infr._hidro', 'localidades', 'marcas y señales', 'otras edificac.', 'obra portuaria', 'obra de comunicación', 'Puente red vial', 'Ptos de alturas topogr.', 
 'Ptos del terreno', 'Salvado de obstaculo', 'señalizaciones', 'curso de agua', 'curvas de nivel', 'lín. de conducción', 'lim politico adm', 'muro embalse', 
 'red ferroviaria', 'red vial', 'vias secundarias', 'ejido', 'espejo de agua hid',  'isla', 'pais lim', 'provincias', 'suelo congelado',  'suelo consolidado', 'suelo costero', 'suelo hidromorfologico', 
 'suelo no consolidado', 'veg. arborea', 'veg. arbustiva', 'veg. cultivos', 'veg. hidrofila', 'veg. suelo desnudo'];
-
 layers_to_show =[
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
@@ -92,7 +98,7 @@ layers.forEach(
         var label = document.createElement("label");
         label.setAttribute("for", check_layer_id);
         label.setAttribute("style", "margin-left:3px; text-transform:capitalize;");
-        label.innerHTML = value;
+        label.innerHTML = l_names[index];
         document.getElementById(check_layer_id).insertAdjacentElement("afterend", label);
         document.getElementById("layerspanel").appendChild(document.createElement("br"));
 
