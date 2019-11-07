@@ -1,8 +1,9 @@
 import set_layout from "./layout.js";
+
 var l_names, layers, layers_to_show, view, map, wmsSource, mousePositionControl;
 
-
 set_layout();
+
 layers = ['actividades_agropecuarias', 'actividades_economicas', 'complejo_de_energia_ene', 'edif_construcciones_turisticas', 'edificio_de_salud_ips', 'edificio_de_seguridad_ips', 
 'edif_depor_y_esparcimiento', 'edif_educacion', 'edificios_ferroviarios', 'edificio_publico_ips', 'edif_religiosos', 'estructuras_portuarias', 'infraestructura_aeroportuaria_punto', 
 'infraestructura_hidro', 'localidades', 'marcas_y_señales', 'otras_edificaciones', 'obra_portuaria', 'obra_de_comunicación', 'puente_red_vial_puntos', 'puntos_de_alturas_topograficas', 
@@ -10,12 +11,13 @@ layers = ['actividades_agropecuarias', 'actividades_economicas', 'complejo_de_en
 'red_ferroviaria', 'red_vial', 'vias_secundarias', 'ejido', 'espejo_de_agua_hid',  'isla', 'pais_lim', 'provincias', 'sue_congelado',  'sue_consolidado', 'sue_costero', 'sue_hidromorfologico', 
 'sue_no_consolidado', 'veg_arborea', 'veg_arbustiva', 'veg_cultivos', 'veg_hidrofila', 'veg_suelo_desnudo'];
 
-l_names = ['Activ. agropecuarias', 'Activ. economicas', 'Complejos de energia', 'Construc. turisticas', 'Edif. de salud', 'Edif. de seguridad', 
-'Edif deporte y esparc.', 'Edif educac.', 'Edif. ferroviarios', 'Edifi. publico', 'Edif. religiosos', 'Estruc. portuarias', 'Infr. aeroportuaria', 
-'Infr._hidro', 'localidades', 'marcas y señales', 'otras edificac.', 'obra portuaria', 'obra de comunicación', 'Puente red vial', 'Ptos de alturas topogr.', 
-'Ptos del terreno', 'Salvado de obstaculo', 'señalizaciones', 'curso de agua', 'curvas de nivel', 'lín. de conducción', 'lim politico adm', 'muro embalse', 
-'red ferroviaria', 'red vial', 'vias secundarias', 'ejido', 'espejo de agua hid',  'isla', 'pais lim', 'provincias', 'suelo congelado',  'suelo consolidado', 'suelo costero', 'suelo hidromorfologico', 
-'suelo no consolidado', 'veg. arborea', 'veg. arbustiva', 'veg. cultivos', 'veg. hidrofila', 'veg. suelo desnudo'];
+l_names = ['Activ. agropecuarias', 'Activ. económicas', 'Complejos de energía', 'Construc. turísticas', 'Edif. de salud', 'Edif. de seguridad', 
+'Edif. deporte y esparc.', 'Edif. educación', 'Edif. ferroviarios', 'Edif. públicos', 'Edif. religiosos', 'Estruc. portuarias', 'Infr. aeroportuaria', 
+'Infr. hidro', 'Localidades', 'Marcas y señales', 'Otras edificac.', 'Obra portuaria', 'Obra de comunicación', 'Puente red vial', 'Ptos de alturas topogr.', 
+'Ptos del terreno', 'Salvado de obstaculo', 'Señalizaciones', 'Curso de agua', 'Curvas de nivel', 'Líneas de conducción', 'Lím. político adm.', 'Muro embalse', 
+'Red ferroviaria', 'Red vial', 'Vías secundarias', 'Ejido', 'Espejo de agua hid',  'Isla', 'Pais lim.', 'Provincias', 'Suelo congelado',  'Suelo consolidado', 'Suelo costero', 'Suelo hidromorfológico', 
+'Suelo no consolidado', 'Veg. arbórea', 'Veg. arbustiva', 'Veg. cultivos', 'Veg. hidrófila', 'Veg. suelo desnudo'];
+
 layers_to_show =[
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
@@ -72,17 +74,7 @@ layers.forEach(
           serverType: "geoserver"
         });
 
-        var legend_id = "legend_"+index;
-
-        var lgnd = document.createElement("div");
-        var lgnd_img = document.createElement("img");
-        lgnd_img.setAttribute("id", legend_id);
-        lgnd_img.setAttribute("src", wmsSource.getLegendUrl(map.getView().getResolution()));
-        lgnd_img.setAttribute("width", 150);
-        lgnd_img.setAttribute("heigth", 150)
-        lgnd.appendChild(lgnd_img);
-        document.getElementById("legendspanel").insertAdjacentElement("beforeend", lgnd);
-        document.getElementById("legendspanel").appendChild(document.createElement("br"));
+        
 
         //Checkbox
         var checkbox = document.createElement("input");
@@ -91,13 +83,23 @@ layers.forEach(
         checkbox.setAttribute("id", check_layer_id);
         document.getElementById("layerspanel").insertAdjacentElement("beforeend", checkbox);
 
-        //Label
+        //Nombre de la capa
         var label = document.createElement("label");
         label.setAttribute("for", check_layer_id);
-        label.setAttribute("style", "margin-left:3px; text-transform:capitalize;");
+        label.setAttribute("style", "margin-left:3px;");
         label.innerHTML = l_names[index];
         document.getElementById(check_layer_id).insertAdjacentElement("afterend", label);
-        document.getElementById("layerspanel").appendChild(document.createElement("br"));
+
+        //Leyenda
+        document.getElementById("layerspanel").insertAdjacentHTML("beforeend", `
+        <button class="btn btn-light" type="button" data-toggle="collapse" data-target=${"#legend_"+index} style="margin:5px; padding:0px 5px;">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="collapse" id=${"legend_"+index}>
+          <img src=${wmsSource.getLegendUrl(map.getView().getResolution())}>
+        </div>
+        <br>
+        `);
 
         //Visibilidad de las capas
         checkbox.addEventListener("change",

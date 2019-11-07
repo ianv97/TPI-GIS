@@ -11,8 +11,7 @@ export default function set_layout() {
     name: 'inner_layout',
     panels: [
         { type: 'main', resizable: true, content: mappanel },
-        { type: 'bottom', size: 300, resizable: true, hidden: true, style: infopanel_styles, content: infopanel },
-        { type: "left", size: 200, resizable: true, style: legendspanel_styles, content: legendspanel}
+        { type: 'bottom', size: 300, resizable: true, hidden: true, style: infopanel_styles, content: infopanel }
     ]
   });
 
