@@ -2,7 +2,7 @@ export default function set_layout() {
   $('#layout').w2layout({
     name: 'layout',
     panels: [
-        { type: 'left', size: 350, resizable: true, style: layerspanel_styles, content: layerspanel },
+        { type: 'left', size: 355, resizable: true, style: layerspanel_styles, content: layerspanel },
         { type: 'main', resizable: true, content: '<div id="inner_layout" style="width:100%; height:100vh;"></div>'},
         { type: 'right', size: 60, resizable: false, style: buttonspanel_styles, content: buttonspanel }
     ]

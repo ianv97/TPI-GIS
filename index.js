@@ -80,6 +80,7 @@ layers.forEach(
         var label = document.createElement("label");
         label.setAttribute("for", check_layer_id);
         label.setAttribute("style", "margin-left:3px;");
+        label.setAttribute("class", "layers_label")
         label.innerHTML = layers[index];
         document.getElementById(check_layer_id).insertAdjacentElement("afterend", label);
 
@@ -103,6 +104,8 @@ layers.forEach(
 
                 // A la última capa puesta como visible se la toma como fuente de las próximas consultas
                 if (checked) {
+                  Array.from(document.getElementsByClassName("layers_label")).forEach(layers_label => layers_label.setAttribute("style", "margin-left:3px;"))
+                  label.setAttribute("style", "margin-left:3px; font-weight:bold; text-decoration:underline;");
                   wmsSource = new ol.source.ImageWMS({
                     url: URL_OGC,
                     params: {'LAYERS': value},
@@ -110,28 +113,35 @@ layers.forEach(
                     crossOrigin: 'anonymous'
                   });
                 }
-                else {wmsSource=null;}
+                else {
+                  wmsSource=null;
+                  label.setAttribute("style", "margin-left:3px;");
+                }
             }
           }
         );
         a_layer.on("change:visible",
-            function() {
-                var visible = this.getVisible();
-                if (visible !== checkbox.checked){
-                    checkbox.checked=visible;
-                }
-            })
+          function() {
+              var visible = this.getVisible();
+              if (visible !== checkbox.checked){
+                  checkbox.checked=visible;
+              }
+          }
+        );
     }
 
 );
+//Quitar la última capa como fuente de consulta
+wmsSource = null;
 
 
 //Función de consultas
 map.on('singleclick', function(evt) {
-  var viewResolution = (view.getResolution());
-  if (wmsSource) {
+  if (modo_consulta && wmsSource) {
+    var viewResolution = (view.getResolution());
     // Si se seleccionó una capa, al hacer click se muestra el infopanel
-    w2ui['inner_layout'].show('bottom', false)
+    w2ui['inner_layout'].show('bottom', false);
+    document.getElementById('infopanel_btn').setAttribute('class','btn btn-dark mt-3 checked');
 
     // Consulta a la última capa seleccionada
     var url = wmsSource.getFeatureInfoUrl(
@@ -150,6 +160,7 @@ map.on('singleclick', function(evt) {
     
   }else {
     // Si no hay una fuente se oculta el infopanel
-    w2ui['inner_layout'].hide('bottom', false)
+    w2ui['inner_layout'].hide('bottom', false);
+    document.getElementById('infopanel_btn').setAttribute('class','btn btn-light mt-3 unchecked');
   }
 });
