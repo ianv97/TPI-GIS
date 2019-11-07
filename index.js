@@ -61,11 +61,6 @@ map = new ol.Map({
   view: view
 });
 
-
-var updateLegend = function(resolution, id) {
-  document.getElementById(id).src = wmsSource.getLegendUrl(resolution)
-};
-
 // Listado de capas y sus leyendas
 layers.forEach(
     function(value, index){
@@ -83,7 +78,9 @@ layers.forEach(
         var lgnd_img = document.createElement("img");
         lgnd_img.setAttribute("id", legend_id);
         lgnd_img.setAttribute("src", wmsSource.getLegendUrl(map.getView().getResolution()));
-        lgnd.innerHTML = lgnd_img;
+        lgnd_img.setAttribute("width", 150);
+        lgnd_img.setAttribute("heigth", 150)
+        lgnd.appendChild(lgnd_img);
         document.getElementById("legendspanel").insertAdjacentElement("beforeend", lgnd);
         document.getElementById("legendspanel").appendChild(document.createElement("br"));
 
