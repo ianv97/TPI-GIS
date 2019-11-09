@@ -205,13 +205,18 @@ map.on('singleclick', function(evt) {
 });
 
 // Medir distancias
-map.on('pointermove', pointerMoveHandler);
+/*map.on('pointermove', pointerMoveHandler);
 
 map.getViewport().addEventListener('mouseout', function() {
   helpTooltipElement.classList.add('hidden');
-});
+});*/
 
 function addInteraction() {
+  map.on('pointermove', pointerMoveHandler);
+  map.getViewport().addEventListener('mouseout', function() {
+    helpTooltipElement.classList.add('hidden');
+  });  
+
   draw = new ol.interaction.Draw({
     source: src_measure,
     type: "LineString",
@@ -252,7 +257,7 @@ function addInteraction() {
       listener = sketch.getGeometry().on('change', function(evt) {
         var geom = evt.target;
         var output;
-        output = ol.sphere.getLength(geom, "EPSG:4326")*100
+        output = /*ol.sphere.getLength(geom)*/geom.getLength()*100;
         tooltipCoord = geom.getLastCoordinate();
         measureTooltipElement.innerHTML = output;
         measureTooltip.setPosition(tooltipCoord);
