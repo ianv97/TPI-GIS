@@ -350,12 +350,14 @@ measure_btn.onclick = function() {
 
 delete_btn = document.getElementById("delete");
 delete_btn.onclick = function() {
-  if (layer_measure){
-    /*
+/*  if (layer_measure){
+    
     map.removeLayer(layer_measure);
     src_measure = new ol.source.Vector();
-    map.addLayer(layer_measure);*/
+    map.addLayer(layer_measure);
     $(".ol-tooltip-static").remove();
-    }
+    }*/
+    src_measure.clear();
+    $(".ol-tooltip-static").remove()
   }
 
