@@ -1,7 +1,7 @@
 import set_layout from "./layout.js";
 
 var layers, layers_to_show, view, map, wmsSource, mousePositionControl, src_measure, layer_measure;
-var measure_btn, listener, draw, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure;
+var measure_btn, delete_btn, listener, draw, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure;
 set_layout();
 
 layers = ['Actividades agropecuarias', 'Actividades económicas', 'Complejos de energía', 'Construcciones turísticas', 'Edificios de salud',
@@ -18,7 +18,7 @@ layers_to_show =[
     source: new ol.source.TileWMS({
       url: "https://wms.ign.gob.ar/geoserver/wms",
       params: {
-        LAYERS: "ign:provincia",
+        LAYERS: "capabaseargenmap",
         VERSION: "1.1.1"
       }
     })
@@ -40,7 +40,6 @@ layers.forEach(function(value) {
 });
 
 // Capa y su fuente donde se dibuja la linea para medir
-
 src_measure = new ol.source.Vector();
 
 layer_measure = new ol.layer.Vector({
@@ -48,18 +47,18 @@ layer_measure = new ol.layer.Vector({
   style: new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(255, 255, 255, 0.2)'
-    }),
+      }),
     stroke: new ol.style.Stroke({
-      color: '#ffcc33',
+      color: '#000000',
       width: 2
     }),
     image: new ol.style.Circle({
       radius: 7,
       fill: new ol.style.Fill({
-        color: '#ffcc33'
+        color: '#000000'
+        })
       })
     })
-  })
 });
 
 var pointerMoveHandler = function(evt) {
@@ -96,7 +95,6 @@ map = new ol.Map({
 });
 
 map.addLayer(layer_measure);
-
 // Listado de capas y sus leyendas
 layers.forEach(
     function(value, index){
@@ -211,6 +209,18 @@ map.getViewport().addEventListener('mouseout', function() {
   helpTooltipElement.classList.add('hidden');
 });*/
 
+formatLength = function(line) {
+  var output;
+  var length = ol.sphere.getLength(line, {projection: "EPSG:4326"});
+  if (length > 1000) {
+    output = length/1000 + " km"
+  }
+  else {
+    output = length + " m"
+  };
+  return output
+}
+
 function addInteraction() {
   map.on('pointermove', pointerMoveHandler);
   map.getViewport().addEventListener('mouseout', function() {
@@ -253,11 +263,10 @@ function addInteraction() {
 
       /** @type {import("../src/ol/coordinate.js").Coordinate|undefined} */
       var tooltipCoord = evt.coordinate;
-
       listener = sketch.getGeometry().on('change', function(evt) {
         var geom = evt.target;
         var output;
-        output = /*ol.sphere.getLength(geom)*/geom.getLength()*100;
+        output = formatLength(geom);
         tooltipCoord = geom.getLastCoordinate();
         measureTooltipElement.innerHTML = output;
         measureTooltip.setPosition(tooltipCoord);
@@ -313,16 +322,40 @@ function createMeasureTooltip() {
   map.addOverlay(measureTooltip);
 }
 
+function toggle_button(btn) {
+  if (btn.classList.contains('checked')){
+    btn.setAttribute('class','btn btn-light mt-3 unchecked');
+    return false;
+  } else {
+    btn.setAttribute('class','btn btn-dark mt-3 checked');
+    return true;
+  }};
+
 measure_btn = document.getElementById("measure_btn");
 measure_btn.onclick = function() {
-  if (measure_btn.classList.contains('unchecked')) {
-    measure_btn.setAttribute("class", "btn btn-dark mt-3 checked")
+
+  toggle_button(measure_btn);
+  if (measure_btn.classList.contains('checked')) {
+    //measure_btn.setAttribute("class", "btn btn-dark mt-3 checked")
     addInteraction()
   } else {
     map.removeInteraction(draw);
     measureTooltipElement.hidden = true;
     helpTooltipElement.hidden = true;
     draw = null;
-    measure_btn.setAttribute("class", "btn btn-light mt-3 unchecked")
+    //measure_btn.setAttribute("class", "btn btn-light mt-3 unchecked")
 }
 };
+
+
+delete_btn = document.getElementById("delete");
+delete_btn.onclick = function() {
+  if (layer_measure){
+    /*
+    map.removeLayer(layer_measure);
+    src_measure = new ol.source.Vector();
+    map.addLayer(layer_measure);*/
+    $(".ol-tooltip-static").remove();
+    }
+  }
+
