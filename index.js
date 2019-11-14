@@ -1,7 +1,7 @@
 import set_layout from "./layout.js";
 
 var layers, layers_to_show, view, map, wmsSource, mousePositionControl, src_measure, layer_measure;
-var measure_btn, delete_btn, listener, draw, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure;
+var new_feature, pol_gjson, edit_btn, measure_btn, delete_btn, listener, draw, draw_edit, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure, layer_edit, src_edit;
 set_layout();
 
 layers = ['Actividades agropecuarias', 'Actividades económicas', 'Complejos de energía', 'Construcciones turísticas', 'Edificios de salud',
@@ -18,7 +18,7 @@ layers_to_show =[
     source: new ol.source.TileWMS({
       url: "https://wms.ign.gob.ar/geoserver/wms",
       params: {
-        LAYERS: "capabaseargenmap",
+        LAYERS: "ign:provincia",
         VERSION: "1.1.1"
       }
     })
@@ -61,6 +61,12 @@ layer_measure = new ol.layer.Vector({
     })
 });
 
+// Capa, y su fuente, donde se van a agregar nuevos eltos
+src_edit = new ol.source.Vector({wrapX: false});
+layer_edit = new ol.layer.Vector({
+  source: src_edit
+});
+
 var pointerMoveHandler = function(evt) {
   if (evt.dragging) {
     return;
@@ -95,6 +101,9 @@ map = new ol.Map({
 });
 
 map.addLayer(layer_measure);
+
+map.addLayer(layer_edit);
+
 // Listado de capas y sus leyendas
 layers.forEach(
     function(value, index){
@@ -359,5 +368,30 @@ delete_btn.onclick = function() {
     }*/
     src_measure.clear();
     $(".ol-tooltip-static").remove()
-  }
+  };
 
+// Agregar nuevos elementos sobre una nueva capa
+function addEditInteraction() {
+  draw_edit = new ol.interaction.Draw({
+    source: src_edit,
+    type: "Polygon"
+  });
+  map.addInteraction(draw_edit);
+
+  draw_edit.on('drawend', 
+    function () {
+      new_feature = new ol.Feature({
+        geometry: new ol.geom.Polygon(draw_edit.sketchCoords_)
+      });
+      pol_gjson = new ol.format.GeoJSON({geometryName: "Polygon"});
+      console.log(pol_gjson.writeFeatureObject(new_feature)/*["geometry"]*/);
+    })
+};
+
+edit_btn = document.getElementById("edit_btn");
+edit_btn.onclick = function() {
+  toggle_button(edit_btn);
+  if (edit_btn.classList.contains("checked")) {
+    addEditInteraction();
+  }
+}
