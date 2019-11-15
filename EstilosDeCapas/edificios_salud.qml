@@ -8,7 +8,7 @@
           <prop k="color" v="227,26,28,255"/>
           <prop k="fixedAspectRatio" v="0"/>
           <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="gpsicons/cross.svg"/>
+          <prop k="name" v="/var/www/html/TPI-GIS/EstilosDeCapas/imagenes/cross.svg"/>
           <prop k="offset" v="-0.00000000000000006,0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
