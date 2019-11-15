@@ -18,7 +18,7 @@ layers_to_show =[
     source: new ol.source.TileWMS({
       url: "https://wms.ign.gob.ar/geoserver/wms",
       params: {
-        LAYERS: "capabaseargenmap",
+        LAYERS: "ign:provincia",
         VERSION: "1.1.1"
       }
     })
