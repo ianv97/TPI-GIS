@@ -384,7 +384,17 @@ function addEditInteraction() {
         geometry: new ol.geom.Polygon(draw_edit.sketchCoords_)
       });
       pol_gjson = new ol.format.GeoJSON({geometryName: "Polygon"});
-      console.log(pol_gjson.writeFeatureObject(new_feature)/*["geometry"]*/);
+      var gjson = JSON.stringify(pol_gjson.writeFeatureObject(new_feature)["geometry"]);
+      console.log(gjson);
+      // ajax, enviar datos a un server php
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status==200) {
+          console.log("ok")
+        }
+      };
+      xhttp.open("GET", "insert.php?g="+gjson, true);
+      xhttp.send()
     })
 };
 
