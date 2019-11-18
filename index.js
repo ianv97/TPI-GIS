@@ -1,7 +1,7 @@
 import set_layout from "./layout.js";
 
-var layers, layers_to_show, view, map, wmsSource, mousePositionControl, consulta_num_capa;
-
+var layers, layers_to_show, view, map, wmsSource, mousePositionControl, src_measure, layer_measure, consulta_num_capa;
+var measure_btn, delete_btn, listener, draw, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure;
 set_layout();
 
 layers = ['Actividades agropecuarias', 'Actividades económicas', 'Complejos de energía', 'Construcciones turísticas', 'Edificios de salud',
@@ -39,6 +39,42 @@ layers.forEach(function(value) {
   layers_to_show.push(layer);
 });
 
+// Capa y su fuente donde se dibuja la linea para medir
+src_measure = new ol.source.Vector();
+
+layer_measure = new ol.layer.Vector({
+  source: src_measure,
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 255, 255, 0.2)'
+      }),
+    stroke: new ol.style.Stroke({
+      color: '#000000',
+      width: 2
+    }),
+    image: new ol.style.Circle({
+      radius: 7,
+      fill: new ol.style.Fill({
+        color: '#000000'
+        })
+      })
+    })
+});
+
+var pointerMoveHandler = function(evt) {
+  if (evt.dragging) {
+    return;
+  }
+  var helpMsg = 'Click para empezar a medir';
+  if (sketch)
+    {helpMsg = "Click para continuar trazando la linea"}
+
+  helpTooltipElement.innerHTML = helpMsg;
+  helpTooltip.setPosition(evt.coordinate);
+
+  helpTooltipElement.classList.remove('hidden');
+};
+
 mousePositionControl = new ol.control.MousePosition({
   coordinateFormat: ol.coordinate.createStringXY(4),
   projection: "EPSG:4326",
@@ -67,6 +103,7 @@ map = new ol.Map({
   view: view
 });
 
+map.addLayer(layer_measure);
 // Listado de capas y sus leyendas
 layers.forEach(
     function(value, index){
@@ -197,5 +234,164 @@ function consultar (coordinate, resolution) {
     w2ui['inner_layout'].hide('bottom', false);
     document.getElementById('infopanel_btn').setAttribute('class','btn btn-light mt-3 unchecked');
   }
-  
 };
+
+// Medir distancias
+/*map.on('pointermove', pointerMoveHandler);
+
+map.getViewport().addEventListener('mouseout', function() {
+  helpTooltipElement.classList.add('hidden');
+});*/
+
+formatLength = function(line) {
+  var output;
+  var length = ol.sphere.getLength(line, {projection: "EPSG:4326"});
+  if (length > 1000) {
+    output = length/1000 + " km"
+  }
+  else {
+    output = length + " m"
+  };
+  return output
+}
+
+function addInteraction() {
+  map.on('pointermove', pointerMoveHandler);
+  map.getViewport().addEventListener('mouseout', function() {
+    helpTooltipElement.classList.add('hidden');
+  });  
+
+  draw = new ol.interaction.Draw({
+    source: src_measure,
+    type: "LineString",
+    style: new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.2)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: 'rgba(0, 0, 0, 0.5)',
+        lineDash: [10, 10],
+        width: 2
+      }),
+      image: new ol.style.Circle({
+        radius: 5,
+        stroke: new ol.style.Stroke({
+          color: 'rgba(0, 0, 0, 0.7)'
+        }),
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.2)'
+        })
+      })
+    })
+  });
+  map.addInteraction(draw);
+
+  createMeasureTooltip();
+  createHelpTooltip();
+
+  var listener;
+  draw.on('drawstart',
+    function(evt) {
+      // set sketch
+      sketch = evt.feature;
+
+      /** @type {import("../src/ol/coordinate.js").Coordinate|undefined} */
+      var tooltipCoord = evt.coordinate;
+      listener = sketch.getGeometry().on('change', function(evt) {
+        var geom = evt.target;
+        var output;
+        output = formatLength(geom);
+        tooltipCoord = geom.getLastCoordinate();
+        measureTooltipElement.innerHTML = output;
+        measureTooltip.setPosition(tooltipCoord);
+      });
+    });
+
+  draw.on('drawend',
+    function() {
+      measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
+      measureTooltip.setOffset([0, -7]);
+      // unset sketch
+      sketch = null;
+      // unset tooltip so that a new one can be created
+      measureTooltipElement = null;
+      createMeasureTooltip();
+      ol.Observable.unByKey(listener);
+    });
+}
+
+
+/**
+ * Creates a new help tooltip
+ */
+function createHelpTooltip() {
+  if (helpTooltipElement) {
+    helpTooltipElement.parentNode.removeChild(helpTooltipElement);
+  }
+  helpTooltipElement = document.createElement('div');
+  helpTooltipElement.className = 'ol-tooltip hidden';
+  helpTooltip = new ol.Overlay({
+    element: helpTooltipElement,
+    offset: [15, 0],
+    positioning: 'center-left'
+  });
+  map.addOverlay(helpTooltip);
+}
+
+
+/**
+ * Creates a new measure tooltip
+ */
+function createMeasureTooltip() {
+  if (measureTooltipElement) {
+    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+  }
+  measureTooltipElement = document.createElement('div');
+  measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
+  measureTooltip = new ol.Overlay({
+    element: measureTooltipElement,
+    offset: [0, -15],
+    positioning: 'bottom-center'
+  });
+  map.addOverlay(measureTooltip);
+}
+
+function toggle_button(btn) {
+  if (btn.classList.contains('checked')){
+    btn.setAttribute('class','btn btn-light mt-3 unchecked');
+    return false;
+  } else {
+    btn.setAttribute('class','btn btn-dark mt-3 checked');
+    return true;
+  }};
+
+measure_btn = document.getElementById("measure_btn");
+measure_btn.onclick = function() {
+
+  toggle_button(measure_btn);
+  if (measure_btn.classList.contains('checked')) {
+    //measure_btn.setAttribute("class", "btn btn-dark mt-3 checked")
+    addInteraction()
+  } else {
+    map.removeInteraction(draw);
+    measureTooltipElement.hidden = true;
+    helpTooltipElement.hidden = true;
+    draw = null;
+    //measure_btn.setAttribute("class", "btn btn-light mt-3 unchecked")
+}
+};
+
+
+delete_btn = document.getElementById("delete");
+delete_btn.onclick = function() {
+/*  if (layer_measure){
+    
+    map.removeLayer(layer_measure);
+    src_measure = new ol.source.Vector();
+    map.addLayer(layer_measure);
+    $(".ol-tooltip-static").remove();
+    }*/
+    src_measure.clear();
+    $(".ol-tooltip-static").remove()
+  }
+
