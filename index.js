@@ -393,8 +393,27 @@ function addEditInteraction() {
           console.log("ok")
         }
       };
-      xhttp.open("GET", "insert.php?g="+gjson, true);
-      xhttp.send()
+
+      $("#popup").w2popup();
+
+      $("#form").w2form({
+        name: 'form',
+        fields: [
+          { name: "campo1", type: "text", required: true},
+          { name: "campo2", type: "int", required: true}],
+        actions: {
+          "save": function () {
+            let campos = $("#form").w2form().record;
+            if (campos.campo1 && campos.campo2){
+              xhttp.open("GET", "insert.php?g="+gjson+"&c1="+campos.campo1+"&c2="+campos.campo2, true);
+              xhttp.send();
+              $("#popup").w2popup().close();
+              this.clear();
+            }
+          }
+        }
+      });
+
     })
 };
 
