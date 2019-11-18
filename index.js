@@ -1,6 +1,6 @@
 import set_layout from "./layout.js";
 
-var layers, layers_to_show, view, map, wmsSource, mousePositionControl;
+var layers, layers_to_show, view, map, wmsSource, mousePositionControl, consulta_num_capa;
 
 set_layout();
 
@@ -10,7 +10,7 @@ layers = ['Actividades agropecuarias', 'Actividades económicas', 'Complejos de 
 'Obra portuaria', 'Obra de comunicación', 'Otras edificaciones', 'Puente red vial', 'Puntos de alturas topográficas', 'Puntos del terreno',
 'Salvado de obstáculo', 'Señalizaciones', 'Curso de agua', 'Curvas de nivel', 'Líneas de conducción', 'Límite político administrativo', 'Muro embalse', 
 'Red ferroviaria', 'Red vial', 'Vías secundarias', 'Ejido', 'Espejo de agua', 'Isla', 'País límites', 'Provincias', 'Suelo congelado',  'Suelo consolidado',
-'Suelo costero', 'Suelo hidromorfo', 'Suelo no consolidado', 'Vegetación arbórea', 'Vegetación arbustiva', 'Vegetación cultivos', 'Vegetación hidrófila',
+'Suelo costero', 'Suelo hidromorfológico', 'Suelo no consolidado', 'Vegetación arbórea', 'Vegetación arbustiva', 'Vegetación cultivos', 'Vegetación hidrófila',
 'Vegetación suelo desnudo'];
 
 layers_to_show =[
@@ -45,14 +45,23 @@ mousePositionControl = new ol.control.MousePosition({
   undefinedHTML: "&nbsp;"
 })
 
+
+
 view = new ol.View({
   projection: 'EPSG:4326',
   center: [-60, -38.5],
   zoom: 5
 });
 
+var home_icon = document.createElement("i");
+home_icon.setAttribute("class", "fas fa-home");
+
 map = new ol.Map({
-  controls: ol.control.defaults().extend([mousePositionControl]),
+  controls: ol.control.defaults().extend([
+    mousePositionControl,
+    new ol.control.ScaleLine(),
+    new ol.control.ZoomToExtent({label: home_icon, extent: [-74, -56, -53, -21]})
+  ]),
   target: 'map',
   layers: layers_to_show,
   view: view
@@ -112,6 +121,7 @@ layers.forEach(
                     serverType: 'geoserver',
                     crossOrigin: 'anonymous'
                   });
+                  consulta_num_capa = index;
                 }
                 else {
                   wmsSource=null;
@@ -135,32 +145,57 @@ layers.forEach(
 wmsSource = null;
 
 
-//Función de consultas
+//CONSULTAS
 map.on('singleclick', function(evt) {
-  if (modo_consulta && wmsSource) {
-    var viewResolution = (view.getResolution());
+  consultar(evt.coordinate, view.getResolution());
+});
+
+var dragBox = new ol.interaction.DragBox();
+dragBox.on('boxend', function() {
+  consultar(dragBox.getGeometry().getCoordinates());
+});
+document.getElementById("infomode_btn").addEventListener("click", function() {
+  if (modo_consulta) {
+    map.addInteraction(dragBox);
+  } else {
+    map.removeInteraction(dragBox);
+  }
+})
+
+function consultar (coordinate, resolution) {
+  if (modo_consulta && wmsSource) { 
+    if (coordinate.length == 2) {
+        //es un punto [lon,lat]
+        var wkt = 'POINT(' + coordinate[0] + ' ' + coordinate[1] + ')';
+    } else {
+        //es un poligono en la forma [ [ [lon,lat],[lon,lat],....] ]
+        var wkt = 'POLYGON((';
+        for (var i = 0; i < coordinate[0].length - 1; i++) {
+            wkt += coordinate[0][i][0] + ' ' + coordinate[0][i][1] + ',';
+        }
+        wkt += coordinate[0][0][0] + ' ' + coordinate[0][0][1] + '))'
+    }
+
+    $.ajax({
+      type: "GET",
+      url: "consulta.php",
+      data: {
+        capa: consulta_num_capa,
+        wkt: wkt,
+        resolution: resolution
+      },
+      success: function(data){
+        document.getElementById('infopanel').innerHTML = data;
+      }
+    })
+
     // Si se seleccionó una capa, al hacer click se muestra el infopanel
     w2ui['inner_layout'].show('bottom', false);
     document.getElementById('infopanel_btn').setAttribute('class','btn btn-dark mt-3 checked');
-
-    // Consulta a la última capa seleccionada
-    var url = wmsSource.getFeatureInfoUrl(
-      evt.coordinate,
-      viewResolution,
-      'EPSG:4326',
-      {'INFO_FORMAT': 'text/html'}
-    );
-    if (url) {
-      fetch(url)
-        .then(function (response) { return response.text(); })
-        .then(function (html) {
-        document.getElementById('infopanel').innerHTML = html;
-      });
-    }
-    
   }else {
     // Si no hay una fuente se oculta el infopanel
     w2ui['inner_layout'].hide('bottom', false);
     document.getElementById('infopanel_btn').setAttribute('class','btn btn-light mt-3 unchecked');
   }
-});
+  
+};
