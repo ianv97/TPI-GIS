@@ -1,7 +1,7 @@
 import set_layout from "./layout.js";
 
 var layers, layers_to_show, view, map, wmsSource, mousePositionControl, src_measure, layer_measure;
-var new_feature, pol_gjson, edit_btn, measure_btn, delete_btn, listener, draw, draw_edit, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure, layer_edit, src_edit;
+var new_feature, pol_gjson, gjson, edit_btn, measure_btn, delete_btn, listener, draw, draw_edit, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure, layer_edit, src_edit;
 set_layout();
 
 layers = ['Actividades agropecuarias', 'Actividades económicas', 'Complejos de energía', 'Construcciones turísticas', 'Edificios de salud',
@@ -384,7 +384,7 @@ function addEditInteraction() {
         geometry: new ol.geom.Polygon(draw_edit.sketchCoords_)
       });
       pol_gjson = new ol.format.GeoJSON({geometryName: "Polygon"});
-      var gjson = JSON.stringify(pol_gjson.writeFeatureObject(new_feature)["geometry"]);
+      gjson = JSON.stringify(pol_gjson.writeFeatureObject(new_feature)["geometry"]);
       console.log(gjson);
       // ajax, enviar datos a un server php
       var xhttp = new XMLHttpRequest();
@@ -422,5 +422,9 @@ edit_btn.onclick = function() {
   toggle_button(edit_btn);
   if (edit_btn.classList.contains("checked")) {
     addEditInteraction();
+  }
+  else {
+    map.removeInteraction(draw_edit);
+    src_edit.clear()
   }
 }
