@@ -14,7 +14,7 @@ $result = pg_query($dbconn, $query) or die("ERROR AL CREAR: " . pg_last_error())
 
 pg_free_result($result);
 
-$query = "INSERT INTO nueva_capa(geom, campo1, campo2) VALUES (ST_GeomFromGeoJSON('$g'), '$c1', '$c2')";
+$query = "INSERT INTO nueva_capa(geom, campo1, campo2) VALUES (ST_SetSRID(ST_GeomFromGeoJSON('$g'), 4326), '$c1', '$c2')";
 
 $result = pg_query($dbconn, $query) or die("ERROR AL INSERTAR: " . pg_last_error());
 //pg_free_result($result);
