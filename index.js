@@ -394,14 +394,19 @@ function addEditInteraction() {
         }
       };
 
-      $("#popup").w2popup();
-
+      $("#popup").w2popup( {showClose : false, modal: true} );
       $("#form").w2form({
-        name: 'form',
+        name: "form",
         fields: [
-          { name: "campo1", type: "text", required: true},
-          { name: "campo2", type: "int", required: true}],
+          { name: "campo1", type:"text", required: true},
+          { name: "campo2", type: "int", required: true}
+        ],
         actions: {
+          "cancel": function () {
+            this.clear();
+            $("#popup").w2popup().close();
+            src_edit.clear();
+          },
           "save": function () {
             let campos = $("#form").w2form().record;
             if (campos.campo1 && campos.campo2){
@@ -409,12 +414,13 @@ function addEditInteraction() {
               xhttp.send();
               $("#popup").w2popup().close();
               this.clear();
-            }
+            };
+            src_edit.clear();
           }
         }
       });
 
-    })
+    });
 };
 
 edit_btn = document.getElementById("edit_btn");
