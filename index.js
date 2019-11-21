@@ -11,7 +11,7 @@ layers = ['Actividades agropecuarias', 'Actividades económicas', 'Complejos de 
 'Salvado de obstáculo', 'Señalizaciones', 'Curso de agua', 'Curvas de nivel', 'Líneas de conducción', 'Límite político administrativo', 'Muro embalse', 
 'Red ferroviaria', 'Red vial', 'Vías secundarias', 'Ejido', 'Espejo de agua', 'Isla', 'País límites', 'Provincias', 'Suelo congelado',  'Suelo consolidado',
 'Suelo costero', 'Suelo hidromorfológico', 'Suelo no consolidado', 'Vegetación arbórea', 'Vegetación arbustiva', 'Vegetación cultivos', 'Vegetación hidrófila',
-'Vegetación suelo desnudo'];
+'Vegetación suelo desnudo', 'Nueva capa'];
 
 layers_to_show =[
   new ol.layer.Tile({
@@ -413,9 +413,9 @@ function addEditInteraction() {
   map.addInteraction(draw_edit);
 
   draw_edit.on('drawend', 
-    function () {
+    function (evt) {
       new_feature = new ol.Feature({
-        geometry: new ol.geom.Polygon(draw_edit.sketchCoords_)
+        geometry: new ol.geom.Polygon(evt.feature.getGeometry().getCoordinates())
       });
       pol_gjson = new ol.format.GeoJSON({geometryName: "Polygon"});
       gjson = JSON.stringify(pol_gjson.writeFeatureObject(new_feature)["geometry"]);
@@ -467,4 +467,5 @@ edit_btn.onclick = function() {
     map.removeInteraction(draw_edit);
     src_edit.clear()
   }
-}
+};
+

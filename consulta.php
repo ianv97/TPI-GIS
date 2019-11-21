@@ -6,7 +6,7 @@ $layers = ['actividades_agropecuarias', 'actividades_economicas', 'complejo_de_e
 'obra_portuaria', 'obra_de_comunicación', 'otras_edificaciones', 'puente_red_vial_puntos', 'puntos_de_alturas_topograficas', 'puntos_del_terreno',
 'salvado_de_obstaculo', 'señalizaciones', 'curso_de_agua_hid', 'curvas_de_nivel', 'líneas_de_conducción_ene', 'limite_politico_administrativo_lim', 'muro_embalse', 
 'red_ferroviaria', 'red_vial', 'vias_secundarias', 'ejido', 'espejo_de_agua_hid',  'isla', 'pais_lim', 'provincias', 'sue_congelado',  'sue_consolidado',
-'sue_costero', 'sue_hidromorfologico', 'sue_no_consolidado', 'veg_arborea', 'veg_arbustiva', 'veg_cultivos', 'veg_hidrofila', 'veg_suelo_desnudo'];
+'sue_costero', 'sue_hidromorfologico', 'sue_no_consolidado', 'veg_arborea', 'veg_arbustiva', 'veg_cultivos', 'veg_hidrofila', 'veg_suelo_desnudo', 'nueva_capa'];
 
 $wkt =  $_GET['wkt'];
 $capa = $layers[$_GET['capa']];
