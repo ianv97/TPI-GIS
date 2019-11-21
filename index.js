@@ -1,7 +1,8 @@
 import set_layout from "./layout.js";
 
 var layers, layers_to_show, view, map, wmsSource, mousePositionControl, src_measure, layer_measure, consulta_num_capa;
-var measure_btn, delete_btn, listener, draw, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure;
+var new_feature, pol_gjson, gjson, edit_btn, measure_btn, delete_btn, listener, draw, draw_edit formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure, layer_edit, src_edit; 
+
 set_layout();
 
 layers = ['Actividades agropecuarias', 'Actividades económicas', 'Complejos de energía', 'Construcciones turísticas', 'Edificios de salud',
@@ -61,6 +62,12 @@ layer_measure = new ol.layer.Vector({
     })
 });
 
+// Capa, y su fuente, donde se van a agregar nuevos eltos
+src_edit = new ol.source.Vector({wrapX: false});
+layer_edit = new ol.layer.Vector({
+  source: src_edit
+});
+
 var pointerMoveHandler = function(evt) {
   if (evt.dragging) {
     return;
@@ -104,6 +111,9 @@ map = new ol.Map({
 });
 
 map.addLayer(layer_measure);
+
+map.addLayer(layer_edit);
+
 // Listado de capas y sus leyendas
 layers.forEach(
     function(value, index){
@@ -393,5 +403,69 @@ delete_btn.onclick = function() {
     }*/
     src_measure.clear();
     $(".ol-tooltip-static").remove()
-  }
+  };
 
+// Agregar nuevos elementos sobre una nueva capa
+function addEditInteraction() {
+  draw_edit = new ol.interaction.Draw({
+    source: src_edit,
+    type: "Polygon"
+  });
+  map.addInteraction(draw_edit);
+
+  draw_edit.on('drawend', 
+    function () {
+      new_feature = new ol.Feature({
+        geometry: new ol.geom.Polygon(draw_edit.sketchCoords_)
+      });
+      pol_gjson = new ol.format.GeoJSON({geometryName: "Polygon"});
+      gjson = JSON.stringify(pol_gjson.writeFeatureObject(new_feature)["geometry"]);
+      console.log(gjson);
+      // ajax, enviar datos a un server php
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status==200) {
+          console.log("ok")
+        }
+      };
+
+      $("#popup").w2popup( {showClose : false, modal: true} );
+      $("#form").w2form({
+        name: "form",
+        fields: [
+          { name: "campo1", type:"text", required: true},
+          { name: "campo2", type: "int", required: true}
+        ],
+        actions: {
+          "cancel": function () {
+            this.clear();
+            $("#popup").w2popup().close();
+            src_edit.clear();
+          },
+          "save": function () {
+            let campos = $("#form").w2form().record;
+            if (campos.campo1 && campos.campo2){
+              xhttp.open("GET", "insert.php?g="+gjson+"&c1="+campos.campo1+"&c2="+campos.campo2, true);
+              xhttp.send();
+              $("#popup").w2popup().close();
+              this.clear();
+            };
+            src_edit.clear();
+          }
+        }
+      });
+
+    });
+};
+
+edit_btn = document.getElementById("edit_btn");
+edit_btn.onclick = function() {
+  toggle_button(edit_btn);
+  if (edit_btn.classList.contains("checked")) {
+    addEditInteraction();
+  }
+  else {
+    map.removeInteraction(draw_edit);
+    src_edit.clear()
+  }
+}
