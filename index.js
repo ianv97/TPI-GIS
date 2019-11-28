@@ -256,10 +256,10 @@ formatLength = function(line) {
   var output;
   var length = ol.sphere.getLength(line, {projection: "EPSG:4326"});
   if (length > 1000) {
-    output = length/1000 + " km"
+    output = Math.round(length / 1000 * 100) / 100 + " km"
   }
   else {
-    output = length + " m"
+    output = Math.round(length * 100) / 100 + " m"
   };
   return output
 }
