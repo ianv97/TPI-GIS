@@ -231,7 +231,37 @@ function consultar (coordinate, resolution) {
         resolution: resolution
       },
       success: function(data){
-        document.getElementById('infopanel').innerHTML = data;
+        var d = JSON.parse(data);
+        console.log(d);
+        if (d.features == null){
+          document.getElementById("infopanel").innerHTML="No se ha encontrado coincidencias";
+        }
+        else{
+        document.getElementById('infopanel').innerHTML="";
+        var t = document.createElement("table");
+        t.setAttribute('class', 'table table-dark');
+        var row = document.createElement("tr");
+        row.setAttribute('style', 'text-transform:capitalize')
+        Object.keys(d.features[0].properties).forEach(
+          function(value, index){
+            let th = document.createElement("th");
+            th.innerHTML = value;
+            row.insertAdjacentElement("beforeend", th);
+          });
+        t.insertAdjacentElement("beforeend", row);
+
+        
+        d.features.forEach( function(feature) {
+          row= document.createElement("tr");
+          console.log(Object.values(feature.properties));
+          Object.values(feature.properties).forEach( function(value){
+            let td = document.createElement("td");
+            td.innerHTML = value;
+            row.insertAdjacentElement("beforeend", td);
+          });
+          t.insertAdjacentElement("beforeend", row);
+        });
+        document.getElementById('infopanel').insertAdjacentElement('beforeend', t)};
       }
     })
 

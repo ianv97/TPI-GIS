@@ -15,13 +15,36 @@ $tolerancia = $_GET['resolution'] * 2;
 $link= pg_connect("host=localhost user=user password=user dbname=tpigis");
 
 if (substr ($wkt, 0 , 5) == "POINT") {
-	$query = "SELECT * FROM $capa WHERE ST_DWithin(ST_geomfromtext('$wkt',4326),geom, $tolerancia)";
+	$query = "SELECT jsonb_build_object(
+					'type', 'FeatureCollection',
+					'features', jsonb_agg(feature)
+					) as result
+				from (
+					select jsonb_build_object(
+						'type', 'Feature',
+						'id', gid,
+						'geometry', st_astext(geom),
+						'properties', to_jsonb(row) - 'gid' - 'geom') as feature
+					from (select * from $capa where ST_DWithin(ST_geomfromtext('$wkt',4326),geom, $tolerancia)) row) features;";
 } else {
-	$query = "SELECT * FROM $capa WHERE st_intersects(ST_geomfromtext('$wkt',4326),geom)";
-}
+		$query = "SELECT jsonb_build_object(
+					'type', 'FeatureCollection',
+					'features', jsonb_agg(feature)
+					) as result
+				from (
+					select jsonb_build_object(
+						'type', 'Feature',
+						'id', gid,
+						'geometry', st_astext(geom),
+						'properties', to_jsonb(row) - 'gid' - 'geom') as feature
+					from (select * from $capa where st_intersects(ST_geomfromtext('$wkt', 4326), geom)) row) features;";
+		};
 
-$result = pg_query($query);
-$nro_campos = pg_num_fields($result);
+$result = pg_query($link, $query);
+$json = pg_fetch_object($result);
+echo $json->result;
+
+/*$nro_campos = pg_num_fields($result);
 $nro_registros = pg_num_rows($result);
 
 $header = '<thead><tr style="text-transform:capitalize">';
@@ -52,5 +75,6 @@ while ($row = pg_fetch_row($result)) {
 $body.= '</tbody>';
 
 echo("<table class='table table-dark'>" . $header . $body . "</table>");
+*/
 
 ?>
