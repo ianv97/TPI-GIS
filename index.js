@@ -214,7 +214,7 @@ document.getElementById("infomode_btn").addEventListener("click", function() {
 src_query = new ol.source.Vector();
 layer_query = new ol.layer.Vector({
   source: src_query,
-  opacity: 0.3,
+  opacity: 0.9,
 });
 map.addLayer(layer_query);
 
