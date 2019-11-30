@@ -241,7 +241,10 @@ function consultar (coordinate, resolution) {
         var t = document.createElement("table");
         t.setAttribute('class', 'table table-dark');
         var row = document.createElement("tr");
-        row.setAttribute('style', 'text-transform:capitalize')
+        row.setAttribute('style', 'text-transform:capitalize');
+        let th = document.createElement("th");
+        th.innerHTML = "gid";
+        row.insertAdjacentElement("beforeend", th);
         Object.keys(d.features[0].properties).forEach(
           function(value, index){
             let th = document.createElement("th");
@@ -250,9 +253,11 @@ function consultar (coordinate, resolution) {
           });
         t.insertAdjacentElement("beforeend", row);
 
-        
         d.features.forEach( function(feature) {
           row= document.createElement("tr");
+          let td = document.createElement("td");
+          td.innerHTML = feature.id;
+          row.insertAdjacentElement("beforeend", td);
           console.log(Object.values(feature.properties));
           Object.values(feature.properties).forEach( function(value){
             let td = document.createElement("td");
