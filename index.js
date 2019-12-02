@@ -1,6 +1,6 @@
 import set_layout from "./layout.js";
 
-var layers, layers_to_show, view, map, wmsSource, mousePositionControl, src_measure, layer_measure, consulta_num_capa;
+var layers, layers_to_show, view, map, wmsSource, mousePositionControl, consulta_num_capa;
 var new_feature, pol_gjson, gjson, edit_btn, measure_btn, delete_btn, listener, draw, draw_edit, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure, layer_edit, src_edit; 
 set_layout();
 
@@ -298,7 +298,6 @@ function addInteraction() {
   createMeasureTooltip();
   createHelpTooltip();
 
-  var listener;
   draw.on('drawstart',
     function(evt) {
       // set sketch

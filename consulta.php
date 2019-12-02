@@ -10,7 +10,7 @@ $layers = ['actividades_agropecuarias', 'actividades_economicas', 'complejo_de_e
 
 $wkt =  $_GET['wkt'];
 $capa = $layers[$_GET['capa']];
-$tolerancia = $_GET['resolution'] * 2;
+$tolerancia = $_GET['resolution'] * 4;
 
 $link= pg_connect("host=localhost user=user password=user dbname=tpigis");
 
