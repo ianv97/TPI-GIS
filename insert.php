@@ -8,7 +8,7 @@ $c1 = $_GET["c1"];
 $c2 = $_GET["c2"];
 
 
-$query="CREATE TABLE IF NOT EXISTS nueva_capa (id SERIAL PRIMARY KEY, geom GEOMETRY(Polygon), campo1 VARCHAR(10), campo2 SMALLINT)";
+$query="CREATE TABLE IF NOT EXISTS nueva_capa (gid SERIAL PRIMARY KEY, geom GEOMETRY(Polygon), campo1 VARCHAR(10), campo2 SMALLINT)";
 
 $result = pg_query($dbconn, $query) or die("ERROR AL CREAR: " . pg_last_error());
 

@@ -2,6 +2,8 @@ import set_layout from "./layout.js";
 
 var layers, layers_to_show, view, map, wmsSource, mousePositionControl, consulta_num_capa;
 var new_feature, pol_gjson, gjson, edit_btn, measure_btn, delete_btn, listener, draw, draw_edit, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure, layer_edit, src_edit; 
+var layers, layers_to_show, view, map, wmsSource, mousePositionControl, src_measure, layer_measure, consulta_num_capa;
+var layer_query, src_query, new_feature, pol_gjson, gjson, edit_btn, measure_btn, delete_btn, listener, draw, draw_edit, formatLength, sketch, helpTooltipElement, helpTooltip, measureTooltipElement, measureTooltip, src_measure, layer_measure, layer_edit, src_edit; 
 set_layout();
 
 layers = ['Actividades agropecuarias', 'Actividades económicas', 'Complejos de energía', 'Construcciones turísticas', 'Edificios de salud',
@@ -193,6 +195,7 @@ wmsSource = null;
 
 //CONSULTAS
 map.on('singleclick', function(evt) {
+  src_query.clear();
   consultar(evt.coordinate, view.getResolution());
 });
 
@@ -205,8 +208,17 @@ document.getElementById("infomode_btn").addEventListener("click", function() {
     map.addInteraction(dragBox);
   } else {
     map.removeInteraction(dragBox);
+    src_query.clear();
   }
-})
+});
+
+// layer para el resaltado de features en la consulta
+src_query = new ol.source.Vector();
+layer_query = new ol.layer.Vector({
+  source: src_query,
+  opacity: 0.9,
+});
+map.addLayer(layer_query);
 
 function consultar (coordinate, resolution) {
   if (modo_consulta && wmsSource) { 
@@ -231,7 +243,45 @@ function consultar (coordinate, resolution) {
         resolution: resolution
       },
       success: function(data){
-        document.getElementById('infopanel').innerHTML = data;
+        src_query.clear();
+        var d = JSON.parse(data);
+        console.log(d);
+        if (d.features == null){
+          document.getElementById("infopanel").innerHTML="No se ha encontrado coincidencias";
+        }
+        else{
+        //recuperar datos en tabla
+        document.getElementById('infopanel').innerHTML="";
+        var t = document.createElement("table");
+        t.setAttribute('class', 'table table-dark');
+        var row = document.createElement("tr");
+        row.setAttribute('style', 'text-transform:capitalize');
+        let th = document.createElement("th");
+        th.innerHTML = "gid";
+        row.insertAdjacentElement("beforeend", th);
+        Object.keys(d.features[0].properties).forEach(
+          function(value){
+            let th = document.createElement("th");
+            th.innerHTML = value;
+            row.insertAdjacentElement("beforeend", th);
+          });
+        t.insertAdjacentElement("beforeend", row);
+
+        d.features.forEach( function(feature) {
+          src_query.addFeature(new ol.format.WKT().readFeature(feature.geometry));
+          row = document.createElement("tr");
+          let td = document.createElement("td");
+          td.innerHTML = feature.id;
+          row.insertAdjacentElement("beforeend", td);
+          console.log(Object.values(feature.properties));
+          Object.values(feature.properties).forEach( function(value){
+            let td = document.createElement("td");
+            td.innerHTML = value;
+            row.insertAdjacentElement("beforeend", td);
+          });
+          t.insertAdjacentElement("beforeend", row);
+        });
+        document.getElementById('infopanel').insertAdjacentElement('beforeend', t)};
       }
     })
 
